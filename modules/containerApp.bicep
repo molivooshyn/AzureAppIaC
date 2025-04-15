@@ -76,25 +76,25 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
               initialDelaySeconds: 20
             }
           ]
-          // volumeMounts: [
-          //   {
-          //     volumeName: 'jss-editing-fs-volume'
-          //     mountPath: '/mnt/jss-fs-volume'
-          //   }
-          // ]
+          volumeMounts: [
+            {
+              volumeName: 'jss-editing-fs-volume'
+              mountPath: '/mnt/jss-fs-volume'
+            }
+          ]
         }
       ]
       scale: {
         minReplicas: 2
         maxReplicas: 2
       }
-      // volumes: [
-      //   {
-      //     name: 'jss-editing-fs-volume'
-      //     storageType: 'AzureFile'
-      //     storageName: 'my-azure-files'
-      //   }
-      // ]
+      volumes: [
+        {
+          name: 'jss-editing-fs-volume'
+          storageType: 'AzureFile'
+          storageName: 'my-azure-files'
+        }
+      ]
     }
   }
 }

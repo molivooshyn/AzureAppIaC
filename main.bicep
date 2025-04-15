@@ -51,9 +51,9 @@ module containerAppsEnv './modules/containerAppsEnv.bicep' = {
     location: location
     baseName: baseName
     tags: tags
+    storageAccount: 'st${baseName}'
     logAnalyticsWorkspaceName: logAnalytics.outputs.logAnalyticsWorkspaceName
     infrastructureSubnetId: network.outputs.containerappsSubnetid
-
   }
 }
 
@@ -69,9 +69,6 @@ module containerApp './modules/containerApp.bicep' = {
     acrUser: acrUser
     acrPass: acrPass
   }
-  dependsOn: [
-    storageAccount
-  ]
 }
 
 module privateLinkService './modules/privateLinkService.bicep' = {

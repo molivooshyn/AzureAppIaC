@@ -13,6 +13,8 @@ param logAnalyticsWorkspaceName string = '${baseName}-log'
 @description('Tags to be applied to all resources')
 param tags object = {}
 
+param storageAccount string
+
 // Define names
 var environmentName = '${baseName}-aca-env'
 
@@ -37,6 +39,26 @@ resource environment 'Microsoft.App/managedEnvironments@2022-03-01' = {
     vnetConfiguration: {
       infrastructureSubnetId: infrastructureSubnetId
       internal: true
+    }
+  }
+}
+
+
+resource storageAccountResource 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
+  name: storageAccount
+}
+var storageKeys = storageAccountResource.listKeys().keys
+var storageAccountKey = storageKeys[0].value
+
+resource managedEnvironments_bay2024nextjsContainerAppEnv_name_my_azure_files 'Microsoft.App/managedEnvironments/storages@2024-10-02-preview' = {
+  parent: environment
+  name: 'my-azure-files'
+  properties: {
+    azureFile: {
+      accountName: storageAccount
+      accountKey: storageAccountKey
+      shareName: 'jss-editing-fs'
+      accessMode: 'ReadWrite'
     }
   }
 }

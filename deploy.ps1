@@ -22,7 +22,7 @@ az group create --name $RESOURCE_GROUP_NAME --location $LOCATION
 Write-Host "Resource Group created: $RESOURCE_GROUP_NAME"
 
 # Deploy Container Registry
-$result = az deployment group create --resource-group $RESOURCE_GROUP_NAME --name $DEPLOYMENT_NAME --template-file resources.bicep --parameters baseName=$BASE_NAME --query properties.outputs.result --output json
+$result = az deployment group create --resource-group $RESOURCE_GROUP_NAME --name $DEPLOYMENT_NAME --template-file prerequisites.bicep --parameters baseName=$BASE_NAME --query properties.outputs.result --output json
 Write-Host "Container Registry created"
 
 # Deploying app image
@@ -42,20 +42,7 @@ Write-Host "Image tag found: $tag"
 $acrUser=az acr credential show --name acrbaadscript --query username -o tsv
 $acrPass=az acr credential show --name acrbaadscript --query "passwords[0].value" -o tsv
 
-Write-Host "ACR Credentials: $acruser, $acrPass"
-
-# if (-not $tag ) {
-#     Write-Host "Failed to get image deployed"
-#     while (-not $tag) {
-#         Write-Host "- retrying..."
-#         $tag = az acr repository show-tags `
-#                 --name acrbaad `
-#                 --repository bay2024-nextjs-app `
-#                 --query "[?@=='latest']" `
-#                 --output tsv
-#         Start-Sleep -Seconds 60
-#     }
-# }
+Write-Host "ACR Credentials obtained"
 Write-Host "Deploying implementation..."
 
 $result = az deployment group create --resource-group $RESOURCE_GROUP_NAME --name $DEPLOYMENT_NAME --template-file main.bicep --parameters baseName=$BASE_NAME acrUser=$acrUser acrPass=$acrPass --query properties.outputs.result --output json
